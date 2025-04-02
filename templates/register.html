@@ -1,0 +1,97 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register Student</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="form-container">
+        <h1>Register Student</h1>
+        
+        <form method="POST" enctype="multipart/form-data" id="register-form">
+            <input type="text" name="name" id="name" placeholder="Enter Student Name" required>
+            
+            <div id="webcam-container">
+                <video id="video" width="320" height="240" autoplay></video>
+            </div>
+            
+            <button id="register-btn" type="submit" class="register-btn">Register</button>
+        </form>
+
+        <p id="message">{{ message }}</p>
+
+        {% if img_path %}
+            <img src="{{ img_path }}" alt="Captured Image" id="captured-img">
+        {% endif %}
+        
+        <button onclick="window.location.href='/'">Back to Main Menu</button>
+    </div>
+
+    <script>
+        let webcamStream;
+        const videoElement = document.getElementById('video');
+        const capturedImageElement = document.getElementById('captured-img');
+        const registerButton = document.getElementById('register-btn');
+
+        // Access the webcam and start video stream
+        async function startWebcam() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                webcamStream = stream;
+                videoElement.srcObject = stream;
+            } catch (err) {
+                alert('Error accessing webcam: ' + err);
+            }
+        }
+
+        // Capture an image from the video stream when register is clicked
+        document.getElementById("register-form").onsubmit = function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            // Capture image when Register button is clicked
+            const canvas = document.createElement('canvas');
+            canvas.width = 320;
+            canvas.height = 240;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/jpeg');
+            
+            // Disable the button to avoid duplication
+            registerButton.disabled = true;
+            registerButton.innerHTML = 'Registered!';
+            
+            // Send the captured image to the server
+            sendImageToServer(imageData);
+        };
+
+        // Send captured image to the server
+        async function sendImageToServer(imageData) {
+            const studentName = document.getElementById('name').value;
+            const formData = new FormData();
+            formData.append('name', studentName);
+            formData.append('image', imageData);
+
+            try {
+                const response = await fetch('/register-student', {
+                    method: 'POST',
+                    body: formData,
+                });
+                const result = await response.json();
+                if (result.success) {
+                    document.getElementById('message').innerText = 'Student Registered!';
+                } else {
+                    document.getElementById('message').innerText = 'Registration failed. Try again!';
+                }
+            } catch (err) {
+                document.getElementById('message').innerText = 'Error: ' + err.message;
+            }
+        }
+
+        // Start the webcam when the page loads
+        window.onload = startWebcam;
+    </script>
+</body>
+</html>

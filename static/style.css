@@ -1,0 +1,144 @@
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff;
+    text-align: center;
+    color: #333;
+    padding: 0;
+    margin: 0;
+}
+.container {
+    margin-top: 50px;
+    text-align: center;
+}
+h1 {
+    color: #4CAF50;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+#webcam {
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 20px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+}
+
+#markAttendance {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    margin-bottom: 20px;
+}
+
+#markAttendance:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+#message {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #d9534f;
+}
+
+#message.success {
+    color: #5bc0de;
+}
+
+.main-container {
+    margin-top: 100px;
+}
+
+.main-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 50px 50px;
+    margin: 30px;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    border-radius: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.main-btn i {
+    margin-right: 10px;
+}
+
+.main-btn:hover {
+    background-color: #45a049;
+    transform: scale(1.1);
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+.form-container {
+    margin-top: 50px;
+    text-align: center;
+
+    padding: 80px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    margin: 0 auto;
+}
+
+input[type="text"] {
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 16px;
+    border-radius: 5px;
+    width: 100%;
+    border: 1px solid #ddd;
+}
+
+.register-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    margin: 10px 0;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 10px;
+    width: 100%;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.register-btn:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+img {
+    margin-top: 20px;
+    max-width: 300px;
+    border-radius: 10px;
+}
+ 
+

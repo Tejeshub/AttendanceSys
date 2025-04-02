@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mark Attendance</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        #webcam-container {
+            margin: 20px auto;
+            max-width: 500px;
+        }
+        #webcam {
+            width: 100%;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+        }
+        .controls {
+            margin: 20px 0;
+        }
+        #markAttendance {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #markAttendance:hover {
+            background-color: #3e8e41;
+        }
+        #markAttendance:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #message {
+            margin-top: 20px;
+            font-size: 18px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .loading {
+            color: #0c5460;
+            background-color: #d1ecf1;
+        }
+        .home-link {
+            display: block;
+            margin-top: 20px;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mark Attendance</h1>
+    
+    <div id="webcam-container">
+        <video id="webcam" autoplay playsinline></video>
+    </div>
+    
+    <div class="controls">
+        <button id="markAttendance">Mark Attendance</button>
+    </div>
+    
+    <div id="message" style="display: none;"></div>
+    
+    <a href="/" class="home-link">Back to Home</a>
+
+    <script>
+        // DOM elements
+        const video = document.getElementById("webcam");
+        const markAttendanceButton = document.getElementById("markAttendance");
+        const messageElement = document.getElementById("message");
+        
+        // Function to show message
+        function showMessage(text, type) {
+            messageElement.textContent = text;
+            messageElement.style.display = "block";
+            
+            // Remove all classes
+            messageElement.classList.remove("success", "error", "loading");
+            
+            // Add appropriate class based on message type
+            if (type) {
+                messageElement.classList.add(type);
+            }
+        }
+        
+        // Access webcam stream
+        async function setupWebcam() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: { ideal: 640 },
+                        height: { ideal: 480 },
+                        facingMode: "user"
+                    } 
+                });
+                video.srcObject = stream;
+                
+                // Wait for video to be ready
+                return new Promise((resolve) => {
+                    video.onloadedmetadata = () => {
+                        resolve(true);
+                    };
+                });
+            } catch (err) {
+                showMessage("Webcam access denied! Please allow camera access to mark attendance.", "error");
+                markAttendanceButton.disabled = true;
+                return false;
+            }
+        }
+        
+        // Initialize webcam
+        setupWebcam();
+        
+        // Mark attendance when button is clicked
+        markAttendanceButton.addEventListener("click", async () => {
+            // Disable button while processing
+            markAttendanceButton.disabled = true;
+            showMessage("Processing... Please wait", "loading");
+            
+            try {
+                // Capture image from webcam
+                const canvas = document.createElement("canvas");
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+                const imageData = canvas.toDataURL("image/jpeg");
+                
+                // Send to server
+                const response = await fetch('/mark-attendance', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image: imageData })
+                });
+                
+                // Parse response
+                const data = await response.json();
+                
+                // Show result
+                showMessage(data.message, data.status === "success" ? "success" : "error");
+                
+            } catch (error) {
+                console.error("Error:", error);
+                showMessage("Error marking attendance! Please try again.", "error");
+            } finally {
+                // Re-enable button
+                markAttendanceButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
