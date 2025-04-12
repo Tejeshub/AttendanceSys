@@ -3,111 +3,838 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attendance Records</title>
+    <title>Attendance Analytics</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Include Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Include Date Range Picker -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <!-- Include DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f8ff;
-            padding: 20px;
-            max-width: 100%;
-            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            padding: 0;
+            margin: 0;
+            color: #333;
         }
+        
+        .navbar {
+            background-color: #005B96;
+            padding: 15px 20px;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .navbar h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
         .container {
-            background-image: url("/static/istockphoto-1281736074-612x612.jpg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-            max-width: 1000px;
-            margin: 0 auto;
-            background-color: white;
+            max-width: 1200px;
+            margin: 20px auto;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: -7px 5px 10px rgba(0, 0, 0, 0.3);
-             /* height: 100vh;  */
         }
-        h1 {
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        h2 {
             color: #005B96;
+            margin: 0;
+            font-size: 1.3rem;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #0074cc, #005B96);
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
             text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card h3 {
+            margin: 0;
+            font-size: 0.9rem;
+            font-weight: normal;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+        
+        .stat-card p {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0 0;
+        }
+        
+        .chart-container {
+            height: 300px;
             margin-bottom: 30px;
         }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
+        
         th, td {
             padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
+        
         th {
-            background-color: #3da396;
+            background-color: #005B96;
             color: white;
-            font-weight: bold;
+            font-weight: 600;
         }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
+        
         tr:hover {
-            background-color: #beb8b8;
+            background-color: #f5f5f5;
         }
-        .back-btn {
+        
+        .high {
+            color: #28a745;
+        }
+        
+        .medium {
+            color: #ffc107;
+        }
+        
+        .low {
+            color: #dc3545;
+        }
+        
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .filter-group select, .filter-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: white;
+        }
+        
+        .action-btn {
             display: inline-block;
-            background-color: #008080;
+            background-color: #005B96;
             color: white;
             padding: 10px 20px;
             text-decoration: none;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
+            transition: background-color 0.3s;
         }
+        
+        .action-btn:hover {
+            background-color: #003d63;
+        }
+        
+        .export-btn {
+            background-color: #28a745;
+        }
+        
+        .export-btn:hover {
+            background-color: #218838;
+        }
+        
+        .back-btn {
+            background-color: #6c757d;
+        }
+        
         .back-btn:hover {
-            background-color: #297066;
+            background-color: #5a6268;
         }
-        .message {
+        
+        .footer {
             text-align: center;
-            color: #666;
-            margin: 20px 0;
-            font-style: italic;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #777;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .card-header .action-btn {
+                margin-top: 10px;
+            }
+        }
+        
+        .attendance-rate {
+            font-weight: bold;
+        }
+        
+        .attendance-85-plus {
+            color: #28a745;
+        }
+        
+        .attendance-75-85 {
+            color: #ffc107;
+        }
+        
+        .attendance-below-75 {
+            color: #dc3545;
+        }
+        
+        .tab-container {
+            margin-bottom: 20px;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+        }
+        
+        .tab.active {
+            background-color: white;
+            border-color: #ddd;
+            color: #005B96;
+            font-weight: 500;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 20px 0;
+        }
+        
+        .tab-content.active {
+            display: block;
         }
     </style>
 </head>
 <body>
+    <div class="navbar">
+        <h1>Student Attendance Management System</h1>
+    </div>
+    
     <div class="container">
-        <h1>Attendance Records</h1>
-        
         {% if message %}
-        <p class="message">{{ message }}</p>
+        <div class="card">
+            <p class="message">{{ message }}</p>
+        </div>
+        {% else %}
+        
+        <!-- Dashboard Stats -->
+        <div class="dashboard">
+            <div class="stat-card">
+                <h3>Total Students</h3>
+                <p>{{ analytics.total_students if analytics and analytics.total_students else 0 }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Days</h3>
+                <p>{{ analytics.total_days if analytics and analytics.total_days else 0 }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Average Attendance</h3>
+                <p>
+                    {% if analytics and analytics.student_analytics %}
+                        {% set total_rate = 0 %}
+                        {% for student, data in analytics.student_analytics.items() %}
+                            {% set total_rate = total_rate + data.attendance_rate %}
+                        {% endfor %}
+                        {{ (total_rate / analytics.total_students)|round(2) }}%
+                    {% else %}
+                        0%
+                    {% endif %}
+                </p>
+            </div>
+            <div class="stat-card">
+                <h3>Present Today</h3>
+                <p>
+                    {% if analytics and analytics.day_analytics %}
+                        {% set today = analytics.dates[-1] if analytics.dates else '' %}
+                        {% if today in analytics.day_analytics %}
+                            {{ analytics.day_analytics[today].present_students }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    {% else %}
+                        0
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        
+        <!-- Tab Navigation -->
+        <div class="tab-container">
+            <div class="tabs">
+                <div class="tab active" data-tab="attendance-records">Attendance Records</div>
+                <div class="tab" data-tab="student-analytics">Student Analytics</div>
+                <div class="tab" data-tab="daily-analytics">Daily Analytics</div>
+                <div class="tab" data-tab="visualizations">Visualizations</div>
+            </div>
+            
+            <!-- Attendance Records Tab -->
+            <div id="attendance-records" class="tab-content active">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Attendance Records</h2>
+                        <button id="export-csv" class="action-btn export-btn">Export CSV</button>
+                    </div>
+                    
+                    <div class="filters">
+                        <div class="filter-group">
+                            <label for="student-filter">Student</label>
+                            <select id="student-filter">
+                                <option value="">All Students</option>
+                                {% if analytics and analytics.students %}
+                                    {% for student in analytics.students %}
+                                        <option value="{{ student }}">{{ student }}</option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="date-range">Date Range</label>
+                            <input type="text" id="date-range" placeholder="Select date range">
+                        </div>
+                        <div class="filter-group">
+                            <label for="status-filter">Status</label>
+                            <select id="status-filter">
+                                <option value="">All Status</option>
+                                <option value="Present">Present</option>
+                                <option value="Absent">Absent</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table id="attendance-table" class="display">
+                            <thead>
+                                <tr>
+                                    {% for header in headers %}
+                                    <th>{{ header }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if attendance_records %}
+                                    {% for record in attendance_records %}
+                                    <tr>
+                                        {% for field in record %}
+                                        <td>{{ field }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                    {% endfor %}
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Student Analytics Tab -->
+            <div id="student-analytics" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Student Attendance Analytics</h2>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table id="student-table" class="display">
+                            <thead>
+                                <tr>
+                                    <th>Student Name</th>
+                                    <th>Total Days</th>
+                                    <th>Days Present</th>
+                                    <th>Attendance Rate</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if analytics and analytics.student_analytics %}
+                                    {% for student, data in analytics.student_analytics.items() %}
+                                    <tr>
+                                        <td>{{ student }}</td>
+                                        <td>{{ data.total_days }}</td>
+                                        <td>{{ data.present_days }}</td>
+                                        <td class="
+                                            attendance-rate
+                                            {% if data.attendance_rate >= 85 %}attendance-85-plus
+                                            {% elif data.attendance_rate >= 75 %}attendance-75-85
+                                            {% else %}attendance-below-75{% endif %}
+                                        ">
+                                            {{ data.attendance_rate }}%
+                                        </td>
+                                        <td>
+                                            {% if data.attendance_rate >= 85 %}
+                                                <span class="high">Good</span>
+                                            {% elif data.attendance_rate >= 75 %}
+                                                <span class="medium">Average</span>
+                                            {% else %}
+                                                <span class="low">Poor</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Daily Analytics Tab -->
+            <div id="daily-analytics" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Daily Attendance Analysis</h2>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table id="daily-table" class="display">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Day</th>
+                                    <th>Total Students</th>
+                                    <th>Present</th>
+                                    <th>Absent</th>
+                                    <th>Attendance Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if analytics and analytics.day_analytics %}
+                                    {% for date in analytics.dates %}
+                                        {% if date in analytics.day_analytics %}
+                                            {% set day_data = analytics.day_analytics[date] %}
+                                            {% set present = day_data.present_students %}
+                                            {% set total = day_data.total_students %}
+                                            {% set absent = total - present %}
+                                            {% set rate = (present / total * 100) if total > 0 else 0 %}
+                                            {% set day = day_data.records[0][2] if day_data.records|length > 0 else '' %}
+                                            <tr>
+                                                <td>{{ date }}</td>
+                                                <td>{{ day }}</td>
+                                                <td>{{ total }}</td>
+                                                <td>{{ present }}</td>
+                                                <td>{{ absent }}</td>
+                                                <td class="
+                                                    attendance-rate
+                                                    {% if rate >= 85 %}attendance-85-plus
+                                                    {% elif rate >= 75 %}attendance-75-85
+                                                    {% else %}attendance-below-75{% endif %}
+                                                ">
+                                                    {{ rate|round(2) }}%
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Visualizations Tab -->
+            <div id="visualizations" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Attendance Trends</h2>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <canvas id="attendance-trend-chart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Student Attendance Comparison</h2>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <canvas id="student-comparison-chart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Weekly Attendance Pattern</h2>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <canvas id="weekly-pattern-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
         {% endif %}
         
-        <table>
-            <thead>
-                <tr>
-                    {% for header in headers %}
-                    <th>{{ header }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% if attendance_records %}
-                    {% for record in attendance_records %}
-                    <tr>
-                        {% for field in record %}
-                        <td>{{ field }}</td>
-                        {% endfor %}
-                    </tr>
-                    {% endfor %}
-                {% else %}
-                    <tr>
-                        <td colspan="{{ headers|length }}" class="message">No attendance records found</td>
-                    </tr>
-                {% endif %}
-            </tbody>
-        </table>
-        
-        <a href="/" class="back-btn">Back to Home</a>
+        <a href="/" class="action-btn back-btn">Back to Home</a>
     </div>
+    
+    <div class="footer">
+        <p>Student Attendance Management System &copy; 2023</p>
+    </div>
+    
+    <script>
+        // Initialize DataTables
+        $(document).ready(function() {
+            // Initialize attendance table with search and pagination
+            $('#attendance-table').DataTable({
+                responsive: true,
+                order: [[1, 'desc'], [3, 'asc']] // Sort by date (descending) and then time
+            });
+            
+            // Initialize student analytics table
+            $('#student-table').DataTable({
+                responsive: true,
+                order: [[3, 'desc']] // Sort by attendance rate (descending)
+            });
+            
+            // Initialize daily analytics table
+            $('#daily-table').DataTable({
+                responsive: true,
+                order: [[0, 'desc']] // Sort by date (descending)
+            });
+            
+            // Initialize date range picker
+            $('#date-range').daterangepicker({
+                opens: 'left',
+                autoUpdateInput: false
+            });
+            
+            $('#date-range').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+                filterTable();
+            });
+            
+            $('#date-range').on('cancel.daterangepicker', function(ev, picker) {
+                $(this).val('');
+                filterTable();
+            });
+            
+            // Handle tab switching
+            $('.tab').click(function() {
+                $('.tab').removeClass('active');
+                $(this).addClass('active');
+                
+                const tabId = $(this).data('tab');
+                $('.tab-content').removeClass('active');
+                $('#' + tabId).addClass('active');
+                
+                // Initialize charts when visualizations tab is active
+                if (tabId === 'visualizations') {
+                    initCharts();
+                }
+            });
+            
+            // Handle filtering
+            $('#student-filter, #status-filter').change(filterTable);
+            
+            function filterTable() {
+                const studentFilter = $('#student-filter').val();
+                const statusFilter = $('#status-filter').val();
+                const dateRangeVal = $('#date-range').val();
+                
+                let startDate, endDate;
+                
+                if (dateRangeVal) {
+                    const dates = dateRangeVal.split(' - ');
+                    startDate = moment(dates[0], 'MM/DD/YYYY');
+                    endDate = moment(dates[1], 'MM/DD/YYYY');
+                }
+                
+                const table = $('#attendance-table').DataTable();
+                
+                $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                    // Skip if not attendance table
+                    if (settings.nTable.id !== 'attendance-table') return true;
+                    
+                    const studentMatch = !studentFilter || data[0] === studentFilter;
+                    const statusMatch = !statusFilter || data[4] === statusFilter;
+                    
+                    let dateMatch = true;
+                    if (dateRangeVal) {
+                        const rowDate = moment(data[1], 'YYYY-MM-DD');
+                        dateMatch = rowDate.isBetween(startDate, endDate, null, '[]');
+                    }
+                    
+                    return studentMatch && statusMatch && dateMatch;
+                });
+                
+                table.draw();
+                
+                // Clear the filter
+                $.fn.dataTable.ext.search.pop();
+            }
+            
+            // Export to CSV functionality
+            $('#export-csv').click(function() {
+                const table = $('#attendance-table').DataTable();
+                const data = table.rows({search: 'applied'}).data();
+                const headers = [];
+                
+                $('#attendance-table thead th').each(function() {
+                    headers.push($(this).text());
+                });
+                
+                let csvContent = headers.join(',') + '\n';
+                
+                for (let i = 0; i < data.length; i++) {
+                    const row = [];
+                    for (let j = 0; j < data[i].length; j++) {
+                        // Handle commas in the data
+                        let cell = data[i][j].toString();
+                        if (cell.includes(',')) {
+                            cell = '"' + cell + '"';
+                        }
+                        row.push(cell);
+                    }
+                    csvContent += row.join(',') + '\n';
+                }
+                
+                const blob = new Blob([csvContent], {type: 'text/csv;charset=utf-8;'});
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                
+                link.setAttribute('href', url);
+                link.setAttribute('download', 'attendance_report.csv');
+                link.style.visibility = 'hidden';
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+            
+            // Initialize charts for the visualization tab
+            function initCharts() {
+                // Attendance Trend Chart
+                const trendCtx = document.getElementById('attendance-trend-chart').getContext('2d');
+                
+                // Prepare data for the chart
+                {% if analytics and analytics.day_analytics and analytics.dates %}
+                    const dates = {{ analytics.dates|tojson }};
+                    const attendanceRates = dates.map(date => {
+                        if (date in {{ analytics.day_analytics|tojson }}) {
+                            const dayData = {{ analytics.day_analytics|tojson }}[date];
+                            return (dayData.present_students / dayData.total_students * 100).toFixed(2);
+                        }
+                        return 0;
+                    });
+                    
+                    new Chart(trendCtx, {
+                        type: 'line',
+                        data: {
+                            labels: dates,
+                            datasets: [{
+                                label: 'Daily Attendance Rate (%)',
+                                data: attendanceRates,
+                                backgroundColor: 'rgba(0, 91, 150, 0.2)',
+                                borderColor: 'rgba(0, 91, 150, 1)',
+                                borderWidth: 2,
+                                tension: 0.3,
+                                fill: true
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    max: 100,
+                                    title: {
+                                        display: true,
+                                        text: 'Attendance Rate (%)'
+                                    }
+                                },
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Date'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                {% endif %}
+                
+                // Student Comparison Chart
+                const comparisonCtx = document.getElementById('student-comparison-chart').getContext('2d');
+                
+                {% if analytics and analytics.student_analytics %}
+                    const students = [];
+                    const rates = [];
+                    const barColors = [];
+                    
+                    {% for student, data in analytics.student_analytics.items() %}
+                        students.push("{{ student }}");
+                        rates.push({{ data.attendance_rate }});
+                        
+                        {% if data.attendance_rate >= 85 %}
+                            barColors.push('rgba(40, 167, 69, 0.7)');
+                        {% elif data.attendance_rate >= 75 %}
+                            barColors.push('rgba(255, 193, 7, 0.7)');
+                        {% else %}
+                            barColors.push('rgba(220, 53, 69, 0.7)');
+                        {% endif %}
+                    {% endfor %}
+                    
+                    new Chart(comparisonCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: students,
+                            datasets: [{
+                                label: 'Attendance Rate (%)',
+                                data: rates,
+                                backgroundColor: barColors,
+                                borderColor: barColors.map(color => color.replace('0.7', '1')),
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    max: 100,
+                                    title: {
+                                        display: true,
+                                        text: 'Attendance Rate (%)'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                {% endif %}
+                
+                // Weekly Pattern Chart
+                const weeklyCtx = document.getElementById('weekly-pattern-chart').getContext('2d');
+                
+                {% if analytics and analytics.day_analytics %}
+                    const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                    const dayAttendance = Array(7).fill(0);
+                    const dayCount = Array(7).fill(0);
+                    
+                    {% for date, day_data in analytics.day_analytics.items() %}
+                        {% if day_data.records|length > 0 %}
+                            const day = "{{ day_data.records[0][2] }}";
+                            const dayIndex = daysOfWeek.indexOf(day);
+                            if (dayIndex >= 0) {
+                                dayAttendance[dayIndex] += {{ day_data.present_students }};
+                                dayCount[dayIndex] += 1;
+                            }
+                        {% endif %}
+                    {% endfor %}
+                    
+                    // Calculate average attendance per day of week
+                    const avgDayAttendance = dayAttendance.map((total, index) => {
+                        return dayCount[index] ? (total / dayCount[index]).toFixed(2) : 0;
+                    });
+                    
+                    new Chart(weeklyCtx, {
+                        type: 'radar',
+                        data: {
+                            labels: daysOfWeek,
+                            datasets: [{
+                                label: 'Average Attendance',
+                                data: avgDayAttendance,
+                                backgroundColor: 'rgba(0, 91, 150, 0.2)',
+                                borderColor: 'rgba(0, 91, 150, 0.7)',
+                                borderWidth: 2,
+                                pointBackgroundColor: 'rgba(0, 91, 150, 1)'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                r: {
+                                    angleLines: {
+                                        display: true
+                                    },
+                                    suggestedMin: 0,
+                                    suggestedMax: Math.max(...avgDayAttendance) * 1.2
+                                }
+                            }
+                        }
+                    });
+                {% endif %}
+            }
+        });
+    </script>
 </body>
 </html>

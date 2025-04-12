@@ -62,6 +62,12 @@
             color: #0c5460;
             background-color: #d1ecf1;
         }
+        .confidence {
+            display: block;
+            margin-top: 10px;
+            font-size: 14px;
+            font-style: italic;
+        }
         .home-link {
             display: block;
             margin-top: 20px;
@@ -157,8 +163,21 @@
                 // Parse response
                 const data = await response.json();
                 
-                // Show result
-                showMessage(data.message, data.status === "success" ? "success" : "error");
+                // Show result message
+                let messageHTML = data.message;
+                
+                // Add confidence score if available
+                if (data.confidence) {
+                    messageHTML += `<span class="confidence">Match confidence: ${data.confidence}</span>`;
+                }
+                
+                // Update message with HTML
+                messageElement.innerHTML = messageHTML;
+                messageElement.style.display = "block";
+                
+                // Apply appropriate class based on status
+                messageElement.classList.remove("success", "error", "loading");
+                messageElement.classList.add(data.status === "success" ? "success" : "error");
                 
             } catch (error) {
                 console.error("Error:", error);
