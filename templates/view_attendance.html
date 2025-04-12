@@ -26,15 +26,17 @@
         }
         
         .navbar {
-            background-color: #005B96;
+            background: linear-gradient(90deg, #2196F3, #1976D2, #0D47A1);
             padding: 15px 20px;
             color: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         
         .navbar h1 {
             margin: 0;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
+            text-align: center;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
         }
         
         .container {
@@ -46,166 +48,370 @@
         .card {
             background-color: white;
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
             padding: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
         
         .card-header {
-            border-bottom: 1px solid #eee;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 18px;
+            margin-bottom: 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         
         h2 {
-            color: #005B96;
+            color: #1976D2;
             margin: 0;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
+            font-weight: 600;
         }
         
         .dashboard {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
+            gap: 25px;
+            margin-bottom: 30px;
         }
         
         .stat-card {
-            background: linear-gradient(135deg, #0074cc, #005B96);
+            background: linear-gradient(135deg, #2196F3, #1565C0);
             color: white;
-            border-radius: 10px;
-            padding: 20px;
+            border-radius: 15px;
+            padding: 25px;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            z-index: -1;
         }
         
         .stat-card h3 {
             margin: 0;
-            font-size: 0.9rem;
-            font-weight: normal;
+            font-size: 0.95rem;
+            font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.8;
+            letter-spacing: 1.5px;
+            opacity: 0.85;
         }
         
         .stat-card p {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: bold;
-            margin: 10px 0 0;
+            margin: 15px 0 5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
         
         .chart-container {
-            height: 300px;
-            margin-bottom: 30px;
+            height: 350px;
+            margin-bottom: 35px;
+            padding: 10px;
         }
         
         .table-container {
             overflow-x: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+        }
+        
+        /* DataTables custom styling */
+        .dataTables_wrapper .dataTables_length, 
+        .dataTables_wrapper .dataTables_filter {
+            margin-bottom: 15px;
+        }
+        
+        .dataTables_wrapper .dataTables_length select {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        
+        .dataTables_wrapper .dataTables_filter input {
+            padding: 8px 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-left: 8px;
+        }
+        
+        .dataTables_wrapper .dataTables_info,
+        .dataTables_wrapper .dataTables_paginate {
+            margin-top: 15px;
+        }
+        
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 5px 12px;
+            border-radius: 5px;
+            margin: 0 3px;
+        }
+        
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: linear-gradient(90deg, #2196F3, #1976D2);
+            color: white !important;
+            border: none;
+        }
+        
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: #e0e4ec;
+            color: #333 !important;
+            border: 1px solid transparent;
+        }
+        
+        /* Table row styling */
+        .table-success {
+            background-color: rgba(40, 167, 69, 0.1) !important;
+            animation: pulse-success 2s infinite;
+        }
+        
+        .table-danger {
+            background-color: rgba(220, 53, 69, 0.1) !important;
+            animation: pulse-danger 2s infinite;
+        }
+        
+        @keyframes pulse-success {
+            0% { background-color: rgba(40, 167, 69, 0.1); }
+            50% { background-color: rgba(40, 167, 69, 0.2); }
+            100% { background-color: rgba(40, 167, 69, 0.1); }
+        }
+        
+        @keyframes pulse-danger {
+            0% { background-color: rgba(220, 53, 69, 0.1); }
+            50% { background-color: rgba(220, 53, 69, 0.2); }
+            100% { background-color: rgba(220, 53, 69, 0.1); }
         }
         
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             margin-bottom: 20px;
+            background-color: white;
         }
         
         th, td {
-            padding: 12px 15px;
+            padding: 15px 18px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
         }
         
         th {
-            background-color: #005B96;
+            background: linear-gradient(90deg, #2196F3, #1976D2);
             color: white;
             font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        th:first-child {
+            border-top-left-radius: 8px;
+        }
+        
+        th:last-child {
+            border-top-right-radius: 8px;
+        }
+        
+        tr:last-child td:first-child {
+            border-bottom-left-radius: 8px;
+        }
+        
+        tr:last-child td:last-child {
+            border-bottom-right-radius: 8px;
+        }
+        
+        tbody tr {
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.2s;
         }
         
         tr:hover {
-            background-color: #f5f5f5;
+            background-color: #f8f9ff;
+            transform: scale(1.01);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
         
         .high {
             color: #28a745;
+            font-weight: 600;
         }
         
         .medium {
             color: #ffc107;
+            font-weight: 600;
         }
         
         .low {
             color: #dc3545;
+            font-weight: 600;
         }
         
         .filters {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 20px;
+            margin-bottom: 30px;
+            background-color: #f8f9ff;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
         
         .filter-group {
             flex: 1;
-            min-width: 200px;
+            min-width: 240px;
         }
         
         .filter-group label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #1976D2;
         }
         
         .filter-group select, .filter-group input {
             width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 10px 15px;
+            border: 1px solid rgba(33, 150, 243, 0.3);
+            border-radius: 8px;
             background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        
+        .filter-group select:focus, .filter-group input:focus {
+            border-color: rgba(33, 150, 243, 0.7);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.25);
+            outline: none;
         }
         
         .action-btn {
-            display: inline-block;
-            background-color: #005B96;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #2196F3, #1976D2);
             color: white;
-            padding: 10px 20px;
+            padding: 12px 24px;
             text-decoration: none;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
         .action-btn:hover {
-            background-color: #003d63;
+            background: linear-gradient(135deg, #1976D2, #0D47A1);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
         
         .export-btn {
-            background-color: #28a745;
+            background: linear-gradient(135deg, #28a745, #20883a);
         }
         
         .export-btn:hover {
-            background-color: #218838;
+            background: linear-gradient(135deg, #218838, #1d7232);
         }
         
         .back-btn {
-            background-color: #6c757d;
+            background: linear-gradient(135deg, #6c757d, #5a6268);
         }
         
         .back-btn:hover {
-            background-color: #5a6268;
+            background: linear-gradient(135deg, #5a6268, #4e555b);
         }
         
         .footer {
             text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            color: #777;
-            font-size: 0.9rem;
+            margin-top: 50px;
+            padding: 20px 0;
+            background: linear-gradient(90deg, #2196F3, #1976D2);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .footer p {
+            margin: 0;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        
+        /* Visual indicators */
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .badge-success {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+        }
+        
+        .badge-warning {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+        
+        .badge-danger {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+        }
+        
+        /* Data visualization enhancements */
+        .chart-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            background: white;
+        }
+        
+        .chart-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 7px;
+            background: linear-gradient(90deg, #2196F3, #1976D2, #0D47A1);
+        }
+        
+        /* Loader animation */
+        .loader {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
         /* Responsive adjustments */
@@ -247,37 +453,86 @@
         }
         
         .tab-container {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
         
         .tabs {
             display: flex;
-            border-bottom: 1px solid #ddd;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            border-bottom: none;
         }
         
         .tab {
-            padding: 10px 20px;
+            padding: 12px 25px;
             cursor: pointer;
-            border: 1px solid transparent;
-            border-bottom: none;
-            margin-right: 5px;
-            border-radius: 5px 5px 0 0;
+            margin-right: 10px;
+            border-radius: 10px;
+            font-weight: 500;
+            color: #666;
+            background-color: #f0f2f5;
+            transition: all 0.3s;
+            white-space: nowrap;
+            border: none;
+        }
+        
+        .tab:hover {
+            background-color: #e0e4ec;
+            color: #333;
         }
         
         .tab.active {
-            background-color: white;
-            border-color: #ddd;
-            color: #005B96;
-            font-weight: 500;
+            background: linear-gradient(90deg, #2196F3, #1976D2);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(33, 150, 243, 0.3);
+            transform: translateY(-3px);
         }
         
         .tab-content {
             display: none;
-            padding: 20px 0;
+            padding: 0;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .tab-content.active {
             display: block;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            animation: zoom-in-out 1.5s infinite;
+        }
+        
+        .status-present {
+            background-color: rgba(40, 167, 69, 0.15);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+        
+        .status-absent {
+            background-color: rgba(220, 53, 69, 0.15);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+        
+        @keyframes zoom-in-out {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
     </style>
 </head>
@@ -286,12 +541,26 @@
         <h1>Student Attendance Management System</h1>
     </div>
     
+    <!-- Loading overlay -->
+    <div id="loading-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(33, 150, 243, 0.7); display: flex; justify-content: center; align-items: center; z-index: 9999;">
+        <div style="text-align: center; color: white;">
+            <div class="loader"></div>
+            <p style="margin-top: 10px; font-weight: 500;">Loading Analytics...</p>
+        </div>
+    </div>
+    
     <div class="container">
         {% if message %}
         <div class="card">
             <p class="message">{{ message }}</p>
         </div>
         {% else %}
+        
+        <!-- Date Display -->
+        <div class="card" style="text-align: center; margin-bottom: 25px;">
+            <h2 id="current-date" style="margin-bottom: 5px;">Today's Date</h2>
+            <p id="current-time" style="font-size: 1.1rem; color: #666;">Current Time</p>
+        </div>
         
         <!-- Dashboard Stats -->
         <div class="dashboard">
@@ -354,7 +623,7 @@
                     <div class="filters">
                         <div class="filter-group">
                             <label for="student-filter">Student</label>
-                            <select id="student-filter">
+                            <select id="student-filter" class="form-control">
                                 <option value="">All Students</option>
                                 {% if analytics and analytics.students %}
                                     {% for student in analytics.students %}
@@ -365,11 +634,11 @@
                         </div>
                         <div class="filter-group">
                             <label for="date-range">Date Range</label>
-                            <input type="text" id="date-range" placeholder="Select date range">
+                            <input type="text" id="date-range" class="form-control" placeholder="Select date range">
                         </div>
                         <div class="filter-group">
                             <label for="status-filter">Status</label>
-                            <select id="status-filter">
+                            <select id="status-filter" class="form-control">
                                 <option value="">All Status</option>
                                 <option value="Present">Present</option>
                                 <option value="Absent">Absent</option>
@@ -381,20 +650,36 @@
                         <table id="attendance-table" class="display">
                             <thead>
                                 <tr>
-                                    {% for header in headers %}
-                                    <th>{{ header }}</th>
-                                    {% endfor %}
+                                    <th style="width: 20%;">Name</th>
+                                    <th style="width: 15%;">Date</th>
+                                    <th style="width: 15%;">Day</th>
+                                    <th style="width: 15%;">Time</th>
+                                    <th style="width: 15%;">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% if attendance_records %}
                                     {% for record in attendance_records %}
                                     <tr>
-                                        {% for field in record %}
-                                        <td>{{ field }}</td>
-                                        {% endfor %}
+                                        <td><strong>{{ record[0] }}</strong></td>
+                                        <td>{{ record[1] }}</td>
+                                        <td>{{ record[2] }}</td>
+                                        <td>{{ record[3] }}</td>
+                                        <td>
+                                            {% if record[4] == "Present" %}
+                                                <span class="status-badge status-present">✓ Present</span>
+                                            {% elif record[4] == "Absent" %}
+                                                <span class="status-badge status-absent">✗ Absent</span>
+                                            {% else %}
+                                                <span class="status-badge status-present">✓ Present</span>
+                                            {% endif %}
+                                        </td>
                                     </tr>
                                     {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5" class="text-center">No attendance records found</td>
+                                    </tr>
                                 {% endif %}
                             </tbody>
                         </table>
@@ -437,15 +722,19 @@
                                         </td>
                                         <td>
                                             {% if data.attendance_rate >= 85 %}
-                                                <span class="high">Good</span>
+                                                <span class="badge badge-success">Good</span>
                                             {% elif data.attendance_rate >= 75 %}
-                                                <span class="medium">Average</span>
+                                                <span class="badge badge-warning">Average</span>
                                             {% else %}
-                                                <span class="low">Poor</span>
+                                                <span class="badge badge-danger">Poor</span>
                                             {% endif %}
                                         </td>
                                     </tr>
                                     {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td></td><td></td><td></td><td></td><td></td>
+                                    </tr>
                                 {% endif %}
                             </tbody>
                         </table>
@@ -499,6 +788,10 @@
                                             </tr>
                                         {% endif %}
                                     {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td></td><td></td><td></td><td></td><td></td><td></td>
+                                    </tr>
                                 {% endif %}
                             </tbody>
                         </table>
@@ -508,7 +801,7 @@
             
             <!-- Visualizations Tab -->
             <div id="visualizations" class="tab-content">
-                <div class="card">
+                <div class="card chart-card">
                     <div class="card-header">
                         <h2>Attendance Trends</h2>
                     </div>
@@ -518,7 +811,7 @@
                     </div>
                 </div>
                 
-                <div class="card">
+                <div class="card chart-card">
                     <div class="card-header">
                         <h2>Student Attendance Comparison</h2>
                     </div>
@@ -528,7 +821,7 @@
                     </div>
                 </div>
                 
-                <div class="card">
+                <div class="card chart-card">
                     <div class="card-header">
                         <h2>Weekly Attendance Pattern</h2>
                     </div>
@@ -551,22 +844,143 @@
     <script>
         // Initialize DataTables
         $(document).ready(function() {
+            // Hide loading overlay when page is ready
+            $('#loading-overlay').fadeOut(800);
+            
+            // Set current date and time
+            function updateDateTime() {
+                const now = new Date();
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const dateString = now.toLocaleDateString('en-US', options);
+                const timeString = now.toLocaleTimeString('en-US');
+                
+                $('#current-date').text(dateString);
+                $('#current-time').text(timeString);
+            }
+            
+            // Update time initially and then every second
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+            
             // Initialize attendance table with search and pagination
             $('#attendance-table').DataTable({
                 responsive: true,
-                order: [[1, 'desc'], [3, 'asc']] // Sort by date (descending) and then time
+                dom: '<"top"lf>rt<"bottom"ip><"clear">',
+                columnDefs: [
+                    { targets: '_all', defaultContent: '' }
+                ],
+                // Check the number of columns in the header and adjust as needed
+                initComplete: function(settings, json) {
+                    // Get the number of columns in the header
+                    const headerColumns = $('#attendance-table thead th').length;
+                    
+                    // Check each row to ensure it has the right number of columns
+                    const table = this;
+                    const api = table.api();
+                    
+                    // Fix for column count mismatch
+                    api.rows().every(function() {
+                        const rowData = this.data();
+                        // If row has fewer columns than the header, add empty cells
+                        if (rowData.length < headerColumns) {
+                            const newData = [...rowData];
+                            for (let i = rowData.length; i < headerColumns; i++) {
+                                newData.push('');
+                            }
+                            this.data(newData);
+                        }
+                        // If row has more columns than the header, truncate
+                        else if (rowData.length > headerColumns) {
+                            this.data(rowData.slice(0, headerColumns));
+                        }
+                    });
+                    
+                    // Redraw the table
+                    api.draw();
+                },
+                order: [[1, 'desc'], [3, 'asc']], // Sort by date (descending) and then time
+                language: {
+                    search: "<span style='font-weight:bold'>Search:</span>",
+                    lengthMenu: "<span style='font-weight:bold'>Show _MENU_ entries</span>"
+                },
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                rowCallback: function(row, data) {
+                    if (data[4] === "Present") {
+                        $(row).addClass('table-success');
+                    } else if (data[4] === "Absent") {
+                        $(row).addClass('table-danger');
+                    }
+                }
             });
             
             // Initialize student analytics table
             $('#student-table').DataTable({
                 responsive: true,
-                order: [[3, 'desc']] // Sort by attendance rate (descending)
+                dom: '<"top"lf>rt<"bottom"ip><"clear">',
+                columnDefs: [
+                    { targets: '_all', defaultContent: '' }
+                ],
+                initComplete: function(settings, json) {
+                    // Fix for column count mismatch
+                    const headerColumns = $('#student-table thead th').length;
+                    const api = this.api();
+                    
+                    api.rows().every(function() {
+                        const rowData = this.data();
+                        if (rowData.length < headerColumns) {
+                            const newData = [...rowData];
+                            for (let i = rowData.length; i < headerColumns; i++) {
+                                newData.push('');
+                            }
+                            this.data(newData);
+                        } else if (rowData.length > headerColumns) {
+                            this.data(rowData.slice(0, headerColumns));
+                        }
+                    });
+                    
+                    api.draw();
+                },
+                order: [[3, 'desc']], // Sort by attendance rate (descending)
+                language: {
+                    search: "<span style='font-weight:bold'>Search:</span>",
+                    lengthMenu: "<span style='font-weight:bold'>Show _MENU_ entries</span>"
+                },
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]]
             });
             
             // Initialize daily analytics table
             $('#daily-table').DataTable({
                 responsive: true,
-                order: [[0, 'desc']] // Sort by date (descending)
+                dom: '<"top"lf>rt<"bottom"ip><"clear">',
+                columnDefs: [
+                    { targets: '_all', defaultContent: '' }
+                ],
+                initComplete: function(settings, json) {
+                    // Fix for column count mismatch
+                    const headerColumns = $('#daily-table thead th').length;
+                    const api = this.api();
+                    
+                    api.rows().every(function() {
+                        const rowData = this.data();
+                        if (rowData.length < headerColumns) {
+                            const newData = [...rowData];
+                            for (let i = rowData.length; i < headerColumns; i++) {
+                                newData.push('');
+                            }
+                            this.data(newData);
+                        } else if (rowData.length > headerColumns) {
+                            this.data(rowData.slice(0, headerColumns));
+                        }
+                    });
+                    
+                    api.draw();
+                },
+                order: [[0, 'desc']], // Sort by date (descending)
+                language: {
+                    search: "<span style='font-weight:bold'>Search:</span>",
+                    lengthMenu: "<span style='font-weight:bold'>Show _MENU_ entries</span>"
+                },
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]]
             });
             
             // Initialize date range picker
@@ -701,30 +1115,72 @@
                             datasets: [{
                                 label: 'Daily Attendance Rate (%)',
                                 data: attendanceRates,
-                                backgroundColor: 'rgba(0, 91, 150, 0.2)',
-                                borderColor: 'rgba(0, 91, 150, 1)',
-                                borderWidth: 2,
-                                tension: 0.3,
-                                fill: true
+                                backgroundColor: 'rgba(33, 150, 243, 0.2)',
+                                borderColor: 'rgba(33, 150, 243, 1)',
+                                borderWidth: 3,
+                                tension: 0.4,
+                                fill: true,
+                                pointBackgroundColor: 'white',
+                                pointBorderColor: 'rgba(33, 150, 243, 1)',
+                                pointBorderWidth: 2,
+                                pointRadius: 5,
+                                pointHoverRadius: 7
                             }]
                         },
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
+                            animation: {
+                                duration: 2000,
+                                easing: 'easeOutQuart'
+                            },
                             scales: {
                                 y: {
                                     beginAtZero: true,
                                     max: 100,
+                                    grid: {
+                                        color: 'rgba(0, 0, 0, 0.05)'
+                                    },
                                     title: {
                                         display: true,
-                                        text: 'Attendance Rate (%)'
+                                        text: 'Attendance Rate (%)',
+                                        font: {
+                                            weight: 'bold'
+                                        }
                                     }
                                 },
                                 x: {
+                                    grid: {
+                                        color: 'rgba(0, 0, 0, 0.05)'
+                                    },
                                     title: {
                                         display: true,
-                                        text: 'Date'
+                                        text: 'Date',
+                                        font: {
+                                            weight: 'bold'
+                                        }
                                     }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        font: {
+                                            weight: 'bold'
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    backgroundColor: 'rgba(33, 150, 243, 0.8)',
+                                    titleFont: {
+                                        size: 14
+                                    },
+                                    bodyFont: {
+                                        size: 13
+                                    },
+                                    padding: 12,
+                                    cornerRadius: 8,
+                                    displayColors: false
                                 }
                             }
                         }
@@ -761,19 +1217,64 @@
                                 data: rates,
                                 backgroundColor: barColors,
                                 borderColor: barColors.map(color => color.replace('0.7', '1')),
-                                borderWidth: 1
+                                borderWidth: 2,
+                                borderRadius: 6,
+                                maxBarThickness: 50
                             }]
                         },
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
+                            animation: {
+                                delay: function(context) {
+                                    return context.dataIndex * 100;
+                                },
+                                duration: 1500,
+                                easing: 'easeOutQuart'
+                            },
                             scales: {
                                 y: {
                                     beginAtZero: true,
                                     max: 100,
+                                    grid: {
+                                        color: 'rgba(0, 0, 0, 0.05)'
+                                    },
                                     title: {
                                         display: true,
-                                        text: 'Attendance Rate (%)'
+                                        text: 'Attendance Rate (%)',
+                                        font: {
+                                            weight: 'bold'
+                                        }
+                                    }
+                                },
+                                x: {
+                                    grid: {
+                                        display: false
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    backgroundColor: 'rgba(33, 150, 243, 0.8)',
+                                    titleFont: {
+                                        size: 14
+                                    },
+                                    bodyFont: {
+                                        size: 13
+                                    },
+                                    padding: 12,
+                                    cornerRadius: 8,
+                                    displayColors: false,
+                                    callbacks: {
+                                        afterLabel: function(context) {
+                                            const value = context.raw;
+                                            if (value >= 85) return 'Status: Good';
+                                            if (value >= 75) return 'Status: Average';
+                                            return 'Status: Poor';
+                                        }
                                     }
                                 }
                             }
@@ -812,22 +1313,62 @@
                             datasets: [{
                                 label: 'Average Attendance',
                                 data: avgDayAttendance,
-                                backgroundColor: 'rgba(0, 91, 150, 0.2)',
-                                borderColor: 'rgba(0, 91, 150, 0.7)',
-                                borderWidth: 2,
-                                pointBackgroundColor: 'rgba(0, 91, 150, 1)'
+                                backgroundColor: 'rgba(33, 150, 243, 0.3)',
+                                borderColor: 'rgba(33, 150, 243, 0.8)',
+                                borderWidth: 3,
+                                pointBackgroundColor: 'white',
+                                pointBorderColor: 'rgba(33, 150, 243, 1)',
+                                pointBorderWidth: 2,
+                                pointRadius: 5,
+                                pointHoverRadius: 7
                             }]
                         },
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
+                            animation: {
+                                duration: 2000
+                            },
                             scales: {
                                 r: {
                                     angleLines: {
-                                        display: true
+                                        color: 'rgba(0, 0, 0, 0.1)'
+                                    },
+                                    grid: {
+                                        color: 'rgba(0, 0, 0, 0.05)'
+                                    },
+                                    pointLabels: {
+                                        font: {
+                                            weight: 'bold'
+                                        }
+                                    },
+                                    ticks: {
+                                        backdropColor: 'transparent',
+                                        color: 'rgba(0, 0, 0, 0.7)'
                                     },
                                     suggestedMin: 0,
                                     suggestedMax: Math.max(...avgDayAttendance) * 1.2
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        font: {
+                                            weight: 'bold'
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    backgroundColor: 'rgba(33, 150, 243, 0.8)',
+                                    titleFont: {
+                                        size: 14
+                                    },
+                                    bodyFont: {
+                                        size: 13
+                                    },
+                                    padding: 12,
+                                    cornerRadius: 8,
+                                    displayColors: false
                                 }
                             }
                         }

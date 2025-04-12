@@ -117,6 +117,19 @@ def view_attendance():
             headers = next(reader, ['Name', 'Date', 'Day', 'Time', 'Status'])
             attendance_records = list(reader)
             
+            # Ensure all records have the same number of columns as headers
+            standardized_records = []
+            for record in attendance_records:
+                # If record has fewer columns than headers, add empty values
+                if len(record) < len(headers):
+                    record = record + [''] * (len(headers) - len(record))
+                # If record has more columns than headers, truncate
+                elif len(record) > len(headers):
+                    record = record[:len(headers)]
+                standardized_records.append(record)
+            
+            attendance_records = standardized_records
+            
         # Calculate analytics
         analytics = {}
         if attendance_records:
